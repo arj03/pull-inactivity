@@ -1,0 +1,6 @@
+# pull-inactivity
+
+
+## License
+
+MIT

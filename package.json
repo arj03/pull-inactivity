@@ -1,0 +1,24 @@
+{
+  "name": "pull-inactivity",
+  "description": "kill a duplex pull-stream after period of inactivity.",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dominictarr/pull-inactivity",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dominictarr/pull-inactivity.git"
+  },
+  "dependencies": {
+    "pull-stream": "~2.26.0",
+    "pull-abortable": "~1.1.1"
+  },
+  "devDependencies": {
+    "interleavings": "~0.3.0",
+    "tape": "~3.0.3"
+  },
+  "scripts": {
+    "prepublish": "npm ls &&  npm test",
+    "test": "set -e; for t in test/*.js; do node $t; done"
+  },
+  "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
+  "license": "MIT"
+}

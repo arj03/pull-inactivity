@@ -4,35 +4,49 @@ var Abortable = require('pull-abortable')
 var Rate = require('./rate')
 
 module.exports = function (duplex, min, onEnd) {
-  var n = 2, error
+
+  var n = 2, error, interval
 
   function done (err) {
     error = error || err
     if(--n) return
+    clearInterval(interval)
     onEnd && onEnd(error)
   }
 
-  var sourceAbort = Abortable(min, done)
-  var sinkAbort   = Abortable(min, done)
+  min = min || 0.002 //2k per second
+
+  var sourceAbort = Abortable(done)
+  var sinkAbort   = Abortable(done)
   var sourceRate  = Rate()
   var sinkRate    = Rate()
 
-  var interval = setInterval(function () {
-    if((sourceRate.rate() + sinkRRate.rate()) < min) {
-      clearInterval(interval)
-      sourceAbort.abort(); sinkAbort.abort()
-    }
+  function rate () {
+    return sourceRate.rate() + sinkRate.rate()
+  }
+
+  function abort () {
+    clearInterval(interval)
+    sourceAbort.abort()
+    sinkAbort.abort()
+  }
+
+  interval = setInterval(function () {
+    console.error(rate(), min)
+    if(rate() < min) abort()
   }, 500)
 
 
   return {
     source: pull(duplex.source, sourceRate, sourceAbort),
-    sink  : pull(sinkRate, sinkAbort, duplex.sink)
+    sink  : pull(sinkRate, sinkAbort, duplex.sink),
+    rate  : rate,
+    abort : abort
   }
 
 }
 
-exports.through = function (min, onEnd) {
+module.exports.through = function (min, onEnd) {
   min = min || 0.002 //2k per second
   var abortable = Abortable(onEnd)
   var flow = Rate()
@@ -55,4 +69,3 @@ exports.through = function (min, onEnd) {
 
   return stream
 }
-

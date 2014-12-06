@@ -10,6 +10,8 @@ function rate (s) {
 
   })
 
+  stream.ts = Date.now()
+
   stream.rate = function () {
     var ts = Date.now()
     if(recent.length > 1) {

@@ -14,7 +14,7 @@ module.exports = function (duplex, min, onEnd) {
     onEnd && onEnd(error)
   }
 
-  min = min || 0.002 //2k per second
+  min = min || 1000 //close after 1 second inactivity.
 
   var sourceAbort = Abortable(done)
   var sinkAbort   = Abortable(done)
@@ -32,9 +32,9 @@ module.exports = function (duplex, min, onEnd) {
   }
 
   interval = setInterval(function () {
-    if(rate() < min) abort()
-  }, 500)
-
+    if(Math.max(sourceRate.ts, sinkRate.ts) + min < Date.now())
+      abort()
+  }, 200)
 
   return {
     source: pull(duplex.source, sourceRate, sourceAbort),

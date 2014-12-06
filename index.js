@@ -32,7 +32,6 @@ module.exports = function (duplex, min, onEnd) {
   }
 
   interval = setInterval(function () {
-    console.error(rate(), min)
     if(rate() < min) abort()
   }, 500)
 

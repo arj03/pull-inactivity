@@ -3,7 +3,8 @@ var pull = require('pull-stream')
 function rate (s) {
   var recent = []
   var stream = pull.through(function (d) {
-    recent.push({size: d.length, ts: Date.now()})
+    stream.ts = Date.now()
+    recent.push({size: d.length, ts: stream.ts})
     if(recent.length > 5)
       recent.shift()
 
@@ -16,7 +17,6 @@ function rate (s) {
         return size + item.size
       }, 0)/1000000) / ((ts - recent[0].ts)/1000)
 
-      console.error(rate)
       return rate
     }
   }

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "pull-stream": "~2.26.0",
-    "pull-abortable": "~1.1.1"
+    "pull-abortable": "~2.0.0"
   },
   "devDependencies": {
     "interleavings": "~0.3.0",

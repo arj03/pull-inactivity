@@ -4,6 +4,8 @@ var Abortable = require('pull-abortable')
 var Rate = require('./rate')
 
 module.exports = function (duplex, min, onEnd) {
+  if('function' === typeof min)
+    onEnd = min, min = null
 
   var n = 2, error, interval
 
@@ -32,6 +34,7 @@ module.exports = function (duplex, min, onEnd) {
   }
 
   interval = setInterval(function () {
+    if(!min) return
     if(Math.max(sourceRate.ts, sinkRate.ts) + min < Date.now())
       abort()
   }, 200)
@@ -40,6 +43,10 @@ module.exports = function (duplex, min, onEnd) {
     source: pull(duplex.source, sourceRate, sourceAbort),
     sink  : pull(sinkRate, sinkAbort, duplex.sink),
     rate  : rate,
+    setTTL: function (_min) {
+      min = _min
+      return this
+    },
     abort : abort
   }
 

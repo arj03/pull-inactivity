@@ -11,9 +11,10 @@ function rand (n) {
 var pair = require('pull-pair')
 
 tape('abort stream when flow reduces to 10k/s', function (t) {
-  t.plan(1)
+  t.plan(2)
 
-  var flow = inactivity(pair(), 0.2, function (err) {
+  var flow = inactivity(pair(), 200, function (err) {
+    console.log("onEnd")
     t.notOk(err)
   })
 
@@ -23,13 +24,12 @@ tape('abort stream when flow reduces to 10k/s', function (t) {
     pull.asyncMap(function (d, cb) {
       setTimeout(function () {
         cb(null, crypto.randomBytes(rand(100)).toString('hex'))
-      }, n++ < 100 ? rand(10) : rand(3000))
+      }, n++ < 10 ? rand(10) : rand(300))
     }),
-    pull.through(console.log),
     flow,
-    pull.drain(null, function () {
+    pull.drain(null, function (err) {
       clearInterval(int)
-      t.end()
+      t.notOk(err)
     })
   )
 

@@ -9,7 +9,7 @@ function rand (n) {
 }
 
 tape('abort stream when flow reduces to 10k/s', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   var flow = inactivity(0.03, function (err) {
     t.notOk(err)
@@ -25,9 +25,9 @@ tape('abort stream when flow reduces to 10k/s', function (t) {
     }),
     pull.through(console.log),
     flow,
-    pull.drain(null, function () {
+    pull.drain(null, function (err) {
       clearInterval(int)
-      t.end()
+      t.notOk(err)
     })
   )
 

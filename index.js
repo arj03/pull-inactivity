@@ -44,6 +44,7 @@ module.exports = function (duplex, min, onEnd) {
     sink  : pull(sinkRate, sinkAbort, duplex.sink),
     rate  : rate,
     setTTL: function (_min) {
+      if(!_min) clearInterval(interval)
       min = _min
       return this
     },

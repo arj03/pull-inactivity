@@ -1,5 +1,6 @@
 
-var pull = require('pull-stream')
+var pull = require('pull-stream/pull')
+var Through = require('pull-stream/throughs/through')
 var Abortable = require('pull-abortable')
 var Rate = require('./rate')
 
@@ -67,7 +68,7 @@ module.exports.through = function (min, onEnd) {
   var stream = pull(
     flow,
     abortable,
-    pull.through(null, function () {
+    Through(null, function () {
       clearInterval(interval)
     })
   )
@@ -76,3 +77,4 @@ module.exports.through = function (min, onEnd) {
 
   return stream
 }
+

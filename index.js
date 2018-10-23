@@ -39,6 +39,7 @@ module.exports = function (duplex, min, onEnd) {
     if(Math.max(sourceRate.ts, sinkRate.ts) + min < Date.now())
       abort()
   }, 200)
+  interval.unref && interval.unref()
 
   return {
     source: pull(duplex.source, sourceRate, sourceAbort),
